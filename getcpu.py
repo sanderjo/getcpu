@@ -1,4 +1,4 @@
-import os, platform, subprocess, re
+import platform, subprocess
 
 
 def getcpu():
@@ -7,8 +7,11 @@ def getcpu():
 
     try:
         if platform.system() == "Windows":
-            # creationflags=0x08000000 means "no pop-up windows"
-            return subprocess.check_output("wmic cpu get name".split(),creationflags=0x08000000 ).strip().split("\n")[1]
+            import _winreg as winreg	# Python 2
+            key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+            processor_brand = winreg.QueryValueEx(key, "ProcessorNameString")[0]
+            winreg.CloseKey(key)
+            return processor_brand
 
         elif platform.system() == "Darwin":
             return subprocess.check_output(['sysctl', "-n", "machdep.cpu.brand_string"]).strip()
@@ -30,4 +33,6 @@ def getcpu():
     return None
 
 
+
 print getcpu()
+
