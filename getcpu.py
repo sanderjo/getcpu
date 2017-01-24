@@ -3,7 +3,7 @@ import platform, subprocess
 
 def getcpu():
     # find the CPU name (which needs a different method per OS), and return it
-    # emptry string if none found
+    # return None if none found
 
     try:
         if platform.system() == "Windows":
